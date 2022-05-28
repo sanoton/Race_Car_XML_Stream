@@ -2,11 +2,22 @@
 
 
 
-#1. xxxxxx_op files 每一條資料為到達起始點的絕對時間點
+#1. xxxxxx_op files 每一條資料為到達起始點的絕對時間點. 
 
-      - 支援至少兩組到最多五組的資料
+      - 支援至少兩組到最多五組的資料（可自行在 block 6 data_process.ipynb 裡頭調整）
 
-      - demo: 
+            if(i == 1):
+                df.loc[index, '第一圈秒數'] = timeTravel
+            elif(i == 2):
+                df.loc[index, '第二圈秒數'] = timeTravel
+            elif(i == 3):
+                df.loc[index, '第三圈秒數'] = timeTravel
+            elif(i == 4):
+                df.loc[index, '第四圈秒數'] = timeTravel
+            elif(i == 5):
+                df.loc[index, '第五圈秒數'] = timeTravel
+
+      - demo（如果要自行使用其他op files, 請把舊的op檔案刪除或是命名沒有 op 尾名的檔名)
 
         # 1014E3_op
 
