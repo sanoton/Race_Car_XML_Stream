@@ -2,20 +2,66 @@
 
 
 
-#1. xxxxxx_op files 每一條資料為到達起始點的絕對時間點. 此格式只
+#1. xxxxxx_op files 每一條的絕對時間點是從最後12 characters裡頭擷取的
 
-      - 支援至少兩組到最多五組的資料（可自行在 block 6 data_process.ipynb 裡頭調整）
 
-            if(i == 1):
-                df.loc[index, '第一圈秒數'] = timeTravel
-            elif(i == 2):
-                df.loc[index, '第二圈秒數'] = timeTravel
-            elif(i == 3):
-                df.loc[index, '第三圈秒數'] = timeTravel
-            elif(i == 4):
-                df.loc[index, '第四圈秒數'] = timeTravel
-            elif(i == 5):
-                df.loc[index, '第五圈秒數'] = timeTravel
+      - 使用block 6理頭的 convertToTimestamp Method. Input 是 string . Output 是 絕對時間點（以毫秒為單位）
+
+
+            # Input = HH:MM:SS.SSS
+            # Output = miliSecond Timestamp
+
+            # 1 hr = 60 * 60 * 1000 = 3_600_000 
+            # 1 min = 60 * 1000 = 60_000  
+            # 1 sec = 1000 = 1_000  
+
+            from datetime import timedelta
+            def convertToTimeStamp(timeStr):
+                h, m, s = map(float, timeStr.split(':'))
+                res = timedelta(hours=h, minutes=m, seconds=s).total_seconds() * 1000
+                return int(res)
+
+            舉例來說：
+
+                Input = "16:06:33.021"         
+                Output = 57993021
+
+
+                Input = "16:08:58.424"
+                Output = 58138424
+
+        - 使用 block 9裡頭的 formattedTime 來轉換成 mm:ss.sss
+
+
+            # Input = ms
+            # Output = nn:sec.mm
+            def formattedTime(timeStamp):
+                
+                msPerMin = 60*1000
+
+                minutes = math.trunc(timeStamp/(msPerMin))
+                seconds = math.trunc((timeStamp - (minutes * msPerMin)) / 1000); 
+                miliSeconds = timeStamp % 1000; 
+
+                minutes = str(minutes).rjust(2,"0")
+                seconds = str(seconds).rjust(2,"0")
+                miliSeconds = str(miliSeconds).rjust(3,"0")
+                        
+                return (minutes + ":" + seconds + "." + miliSeconds)
+
+
+        - 支援至少兩組到最多五組的資料（可自行在 block 11 data_process.ipynb 裡頭調整）
+
+                if(i == 1):
+                    df.loc[index, '第一圈秒數'] = timeTravel
+                elif(i == 2):
+                    df.loc[index, '第二圈秒數'] = timeTravel
+                elif(i == 3):
+                    df.loc[index, '第三圈秒數'] = timeTravel
+                elif(i == 4):
+                    df.loc[index, '第四圈秒數'] = timeTravel
+                elif(i == 5):
+                    df.loc[index, '第五圈秒數'] = timeTravel
 
       - demo（)
 
@@ -42,9 +88,11 @@
 
             1651545180 472058 2022/05/03 Tue - 10:33:00.472
             1651545309 686995 2022/05/03 Tue - 10:35:09.686
+            1651545509 686995 2022/05/03 Tue - 10:37:09.686
+            1651545559 686995 2022/05/03 Tue - 10:39:49.236
 
 
-#2. 在 data_process.ipynb 請修改 block 6 裡頭的
+#2. 在 data_process.ipynb 請修改 block 11 裡頭的
 
     - os.chdir("/Users/stevenkan/Documents/Project/Race_Car_Stream") 路徑到包含   
       data_process.ipynb的路徑
@@ -72,7 +120,7 @@
 
 #4. 此程式只預設跑5秒鐘的時間, 請自行修改時間
 
-    - 請到 data_process.ipynb 的 block 10 理頭, 自行修改 apprx_finish_second
+    - 請到 data_process.ipynb 的 block 15 理頭, 自行修改 apprx_finish_second
 
     
 
@@ -88,12 +136,12 @@
             <車型>BMW M4</車型>
             <日期>2019-03-02 11:16:07</日期>
             <車競賽>1</車競賽>
-            <第一圈秒數>00:00.100</第一圈秒數>
-            <第二圈秒數>00:00.100</第二圈秒數>
-            <第三圈秒數>00:00.100</第三圈秒數>
-            <第四圈秒數>00:00.100</第四圈秒數>
-            <第五圈秒數>00:00.100</第五圈秒數>
-            <最佳圈秒數>00:00.100</最佳圈秒數>
+            <第一圈秒數>08:09.214</第一圈秒數>
+            <第二圈秒數>02:04.722</第二圈秒數>
+            <第三圈秒數>03:59.671</第三圈秒數>
+            <第四圈秒數>03:55.723</第四圈秒數>
+            <第五圈秒數>00:55.624</第五圈秒數>
+            <最佳圈秒數>00:55.624</最佳圈秒數>
         </row>
         <row>
             <卡號>#2</卡號>
@@ -102,12 +150,12 @@
             <車型>McLaren 720S</車型>
             <日期>2019-06-01 10:06:07</日期>
             <車競賽>1</車競賽>
-            <第一圈秒數>00:00.200</第一圈秒數>
-            <第二圈秒數>00:00.150</第二圈秒數>
-            <第三圈秒數>00:00.050</第三圈秒數>
-            <第四圈秒數>00:00.170</第四圈秒數>
-            <第五圈秒數>00:00.180</第五圈秒數>
-            <最佳圈秒數>00:00.050</最佳圈秒數>
+            <第一圈秒數>02:09.214</第一圈秒數>
+            <第二圈秒數>02:04.722</第二圈秒數>
+            <第三圈秒數>01:59.671</第三圈秒數>
+            <第四圈秒數>01:56.723</第四圈秒數>
+            <第五圈秒數>01:54.624</第五圈秒數>
+            <最佳圈秒數>01:54.624</最佳圈秒數>
         </row>
         <row>
             <卡號>#3</卡號>
@@ -116,11 +164,11 @@
             <車型>Porsche 918 GTR</車型>
             <日期>2019-04-05 16:30:07</日期>
             <車競賽>1</車競賽>
-            <第一圈秒數>00:00.129</第一圈秒數>
-            <第二圈秒數>00:00.200</第二圈秒數>
-            <第三圈秒數>00:00.050</第三圈秒數>
+            <第一圈秒數>02:09.214</第一圈秒數>
+            <第二圈秒數>02:00.000</第二圈秒數>
+            <第三圈秒數>02:39.550</第三圈秒數>
             <第四圈秒數></第四圈秒數>
             <第五圈秒數></第五圈秒數>
-            <最佳圈秒數>00:00.050</最佳圈秒數>
+            <最佳圈秒數>02:00.000</最佳圈秒數>
         </row>
         </csv_data>
