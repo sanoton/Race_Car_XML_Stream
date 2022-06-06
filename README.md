@@ -1,6 +1,9 @@
 
 
-#0. 要是 op files 還沒產生出來前, result.xml 顯示為
+#-1. 最終將導出 result_YY/MM/DD_HH:MM:SS.xml 檔案
+
+
+#0. 要是 op files 還沒產生出來前, result.YY/MM/DD_HH:MM:SS.xml 顯示為
 
         <?xml version="1.0"?>
         <csv_data>
@@ -744,5 +747,6 @@
                 <排名>3</排名>
             </row>
             </csv_data>
+
 
 
