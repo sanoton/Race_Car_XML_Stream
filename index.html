@@ -48,12 +48,16 @@
 		<div class="table-wrapper">
 			<div class="table-title">
 				<div class="row">
-					<div class="col-sm-5">
+					<div class="col-sm-3">
 						<h2>賽車人員名單</b></h2>
 					</div>
-					<div class="col-sm-7">
+					<div class="col-sm-">
+						<button class="convert-xml"> <i class="material-icons">&#xE15A;</i>轉入xml檔案</button>
+						<button > <i class="material-icons">&#xE15A;</i>讀取xml檔案 <input class="read-xml" type="file" accept="xml"></button>
+						<button class="sort-id"> <i class="material-icons">&#xE15A;</i>排序卡號</button>
+						<button class="sort-time"> <i class="material-icons">&#xE15A;</i>排序時間</button>
 						<button class="show-create-modal">   <i class="material-icons">&#xE147;</i>新增賽車手</button>
-						<button class="show-delete-modal"> <i class="material-icons">&#xE15C;</i>刪除選擇賽車手</button>
+						<button class="show-delete-modal" value="-1"> <i class="material-icons">&#xE15C;</i>刪除選擇賽車手</button>
 					</div>
 				</div>
 			</div>
@@ -97,7 +101,7 @@
 			</table>
 			<!-- <div class="overlay hidden"></div> -->
 			<div class="clearfix">
-				<div class="hint-text">顯示 <b>5</b> out of <b>${records.length}</b> 總共人員</div>
+				<div ><b class="current-timer">顯示當前計時</b></div>
 				<ul class="pagination">
 					<li class="page-item disabled"><a href="#">上一頁</a></li>
 					<li class="page-item"><a href="#" class="page-link">1</a></li>
@@ -158,7 +162,7 @@
 					<button type="button" class="close-delete-modal" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body">					
-					<p>Are you sure you want to delete these Records?</p>
+					<p>Are you sure you want to delete these record(s)?</p>
 					<p class="text-warning"><small>This action cannot be undone!</small></p>
 				</div>
 				<div class="modal-footer">
@@ -170,6 +174,12 @@
 	</div>
 </div>
 
-	<script src="script.js"></script>
+<div class="read-data-from-xml hidden">
+
+</div>
+
+	<script type="module" src="script.js"></script>
+
+	
 </body>
 </html>
