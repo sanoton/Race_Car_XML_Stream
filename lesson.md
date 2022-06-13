@@ -8,4 +8,4 @@ Lesson:
 
         #4. Run jupyter notebook by hand 
 
-        #5. 
+        #5. replace(str, newStr);       <-- replace only first occurance of string 

@@ -60,7 +60,7 @@ const btnsCloseEditModal = document.querySelector(".close-edit-modal");
 const btnsCloseDeleteModal = document.querySelector(".close-delete-modal");
 const btnModifyRecord = document.querySelector(".modify-record");                 // dynamic element
 let btnsCancelRecord = document.querySelectorAll(".cancel-modify-record");
-const btnReadXML = document.querySelector(".read-xml");
+const btnReadXML = document.querySelector(".read-xml-file");
 // const btnStopReadXML = document.querySelector(".stop-read-xml");
 
 
@@ -90,8 +90,6 @@ let timer;
 // Display all records 
 const displayRecords = function(){
 
-    // console.log(records);
-
     containerTable.innerHTML = "";
     records.forEach(function(record, i){
 
@@ -103,12 +101,12 @@ const displayRecords = function(){
                     <label for="checkbox3"></label>
                 </span>
             </td>
-            <td class="xml" id="姓名">${record.name}</td>
-            <td class="xml" id="卡號">${record.id}</td>
-            <td class="xml" id="rfid">${record.rfid}</td>
-            <td class="xml" id="車隊">${record.team}</td>
-            <td class="xml" id="車型">${record.carModel}</td>
-            <td class="xml" id="日期">${record.time}</td>
+            <td class="write-xml" id="姓名">${record.name}</td>
+            <td class="write-xml" id="卡號">${record.id}</td>
+            <td class="write-xml" id="rfid">${record.rfid}</td>
+            <td class="write-xml" id="車隊">${record.team}</td>
+            <td class="write-xml" id="車型">${record.carModel}</td>
+            <td class="write-xml" id="日期">${record.time}</td>
             <td>
             <button class="show-edit-modal" value="${i}"> 修改</button>
             <button class="show-delete-modal" value="${i}"> 刪除</button> 
@@ -191,7 +189,6 @@ const updateMenu = function(record){
 // button modify a record
 btnModifyRecord.addEventListener("click", function(e){
     e.preventDefault();
-    console.log(e.target);
 
     let newRecord = createAnRecord();
     if(isModified === true)
@@ -225,7 +222,6 @@ document.body.addEventListener("click",function(e){
         document.querySelector(".modify-record").value = "修改";
 
         currRacerIndex = Number(e.target.value);
-        console.log(records[currRacerIndex]);
         updateMenu(records[currRacerIndex]);
         editModal.classList.remove("hidden");
 
@@ -245,18 +241,15 @@ document.body.addEventListener("click", function(e){
         else
             deleteSet.delete(records[e.target.value].rfid);
     }
-    console.log(deleteSet);
 });
 
 
 // Button to show deletion modal 
 document.body.addEventListener("click", function(e){
     if(e.target.className === "show-delete-modal"){
-        // console.log("hello");
         deleteModal.classList.remove("hidden");
 
         deleteRacerIndex = Number(e.target.value);
-        console.log(deleteRacerIndex);
 
         isDeleteMultiple = (deleteRacerIndex === -1)? true: false;
         // wait for DELETE Confirmation Button
@@ -267,7 +260,6 @@ document.body.addEventListener("click", function(e){
 // DELETE Confirmation Button
 document.querySelector(".btn-danger").addEventListener("click", function(e){
     e.preventDefault();
-    console.log(1234);
 
     if(isDeleteMultiple === false){
         records.splice(deleteRacerIndex,1);
@@ -306,15 +298,12 @@ btnDeleteSelectRecordsModal.addEventListener("click", function(e){
 btnSortId.addEventListener("click", function(e){
     e.preventDefault();
 
-    console.log(12345);
     if(isAscending)
         records.sort((a,b) => a.id - b.id);
     else
         records.sort((a,b) => b.id - a.id);
     
     isAscending = !isAscending;
-    console.log(isAscending);
-    console.log(records);
     displayRecords();
 });
 
@@ -329,7 +318,6 @@ btnSortTime.addEventListener("click", function(e){
         records.sort((a,b) => b.timestamp - a.timestamp);
     
     isRecent = !isRecent;
-    console.log(records);
     displayRecords();
 });
 
@@ -338,7 +326,7 @@ btnSortTime.addEventListener("click", function(e){
 btnConvertXML.addEventListener("click", function(e){
     e.preventDefault();
     let writeData = `<?xml version="1.0"?> \n \t <contest> \n`;
-    let allEntries = document.querySelectorAll(".xml");
+    let allEntries = document.querySelectorAll(".write-xml");
     // allEntries.forEach(function(val,i){
     //     console.log(new XMLSerializer().serializeToString(allEntries[i]));
     // });
@@ -355,7 +343,7 @@ btnConvertXML.addEventListener("click", function(e){
             oneRecord += `<${allEntries[k].id}>${allEntries[k].textContent}</${allEntries[k].id}> \n`;
         }
         oneRecord += `\t\t`;
-        console.log(oneRecord + "\n\n");
+        // console.log(oneRecord + "\n\n");
         writeData += oneRecord; 
         writeData += `</card> \n`;
 
@@ -363,7 +351,7 @@ btnConvertXML.addEventListener("click", function(e){
     writeData += `\t</contest>`;
 
 
-    // Method 2
+    // Race_cars_info_tester will be stored in the download folder of the browser. 
     let textFile = null, makeTextFile = function (text) {
         let data = new Blob([text], {type: 'xml'});
 
@@ -394,20 +382,176 @@ btnConvertXML.addEventListener("click", function(e){
 });
 
 
-// Button to read data in current directory. 
+// ********************** New functionality *******************
+const containerReadTable = document.querySelector(".table-body-2");                       // static
+
+
+// Display all records 
+const displayReadRecords = function(){
+
+    containerReadTable.innerHTML = "";
+    console.log(records2);
+    records2.forEach(function(record, i){
+        const html = `
+            <tr class="tr">
+                <td>
+                    <span class="custom-checkbox">
+                        <input type="checkbox" id="checkbox3" name="options[]" value="${i}">
+                        <label for="checkbox3"></label>
+                    </span>
+                </td>
+                <td class="read-xml" id="姓名">${record.name}</td>
+                <td class="read-xml" id="卡號">${record.id}</td>
+                <td class="read-xml" id="rfid">N/A</td>
+                <td class="read-xml" id="車隊">${record.team}</td>
+                <td class="read-xml" id="車型">${record.carModel}</td>
+                <td class="read-xml" id="日期">${record.date}</td>
+                <td class="read-xml" id="第一圈秒數">${record.lamp1Score}</td>
+                <td class="read-xml" id="第二圈秒數">${record.lamp2Score}</td>
+                <td class="read-xml" id="第三圈秒數">${record.lamp3Score}</td>
+                <td class="read-xml" id="第四圈秒數">${record.lamp4Score}</td>
+                <td class="read-xml" id="第五圈秒數">${record.lamp5Score}</td>
+                <td class="read-xml" id="最佳圈秒數">${record.bestLampScore}</td>
+                <td class="read-xml" id="排名">${record.rank}</td>
+            </tr>`;
+        containerReadTable.insertAdjacentHTML('beforeend', html);
+    });
+};
+
+let readXMLData; 
+let temp; 
+let nameArr = [];
+let idArr = [];
+// let rfidArr = [];
+let teamArr = [];
+let carModelArr = [];
+let dateArr = [];
+let lamp1Arr = [];
+let lamp2Arr = [];
+let lamp3Arr = [];
+let lamp4Arr = [];
+let lamp5Arr = [];
+let bestLampArr = [];
+let rankArr = [];
+let records2 = [];
+
+
+// Populate -1 to indicate the score is not ready. 
+const populateLampArrs = function(strArr){
+    for(let i = 0; i < strArr.length; i++){
+
+        lamp1Arr.push('');
+        lamp2Arr.push('');
+        lamp3Arr.push('');
+        lamp4Arr.push('');
+        lamp5Arr.push('');
+        bestLampArr.push('');
+    }
+};
+
+
+// Parse an array of strings
+const parseStringArrToRecords = function(strArr){
+
+
+    populateLampArrs(strArr);
+    strArr.forEach(function(str,i){
+
+        let strArrForOneRacer = str.split(`\n`);
+
+        strArrForOneRacer.forEach(function(val,j){
+            if(val.includes(`<姓名>`))
+                nameArr.push(val.trim().replace(`<姓名>`, "").replace(`</姓名>`, ""));
+            else if(val.includes(`<卡號>`))
+                idArr.push(val.trim().replace(`<卡號>`, "").replace(`</卡號>`, ""));
+            else if(val.includes(`<車隊>`))
+                teamArr.push(val.trim().replace(`<車隊>`, "").replace(`</車隊>`, ""));
+            else if(val.includes(`<車型>`))
+                carModelArr.push(val.trim().replace(`<車型>`, "").replace(`</車型>`, ""));
+            else if(val.includes(`<日期>`))
+                dateArr.push(val.trim().replace(`<日期>`, "").replace(`</日期>`, ""));
+            else if(val.includes(`<第一圈秒數>`))
+                lamp1Arr[i] = (val.trim().replace(`<第一圈秒數>`, "").replace(`</第一圈秒數>`, ""));
+            else if(val.includes(`<第二圈秒數>`))
+                lamp2Arr[i] = (val.trim().replace(`<第二圈秒數>`, "").replace(`</第二圈秒數>`, ""));
+            else if(val.includes(`<第三圈秒數>`))
+                lamp3Arr[i] = (val.trim().replace(`<第三圈秒數>`, "").replace(`</第三圈秒數>`, ""));
+            else if(val.includes(`<第四圈秒數>`))
+                lamp4Arr[i] = (val.trim().replace(`<第四圈秒數>`, "").replace(`</第四圈秒數>`, ""));
+            else if(val.includes(`<第五圈秒數>`))
+                lamp5Arr[i] = (val.trim().replace(`<第五圈秒數>`, "").replace(`</第五圈秒數>`, ""));
+            else if(val.includes(`<最佳圈秒數>`))
+                bestLampArr[i] = (val.trim().replace(`<最佳圈秒數>`, "").replace(`</最佳圈秒數>`, ""));
+            else if(val.includes(`<排名>`))
+                rankArr.push(val.trim().replace(`<排名>`, "").replace(`</排名>`, ""));
+        });
+
+
+    });
+
+    // console.log(nameArr);
+    // console.log(idArr);
+    // console.log(teamArr);
+    // console.log(carModelArr);
+    // console.log(dateArr);
+    // console.log(lamp1Arr);
+    // console.log(lamp2Arr);
+    // console.log(lamp3Arr);
+    // console.log(lamp4Arr);
+    // console.log(lamp5Arr);
+    // console.log(bestLampArr);
+
+
+    for(let i = 0; i < nameArr.length; i++){
+        // let newRecord = new Object();
+        let newRecord = new Object();
+        newRecord.name = nameArr[i];
+        newRecord.id =  idArr[i];
+        newRecord.team = teamArr[i];
+        newRecord.carModel = carModelArr[i];
+        newRecord.date = dateArr[i];
+        newRecord.lamp1Score = lamp1Arr[i];
+        newRecord.lamp2Score = lamp2Arr[i];
+        newRecord.lamp3Score = lamp3Arr[i];
+        newRecord.lamp4Score = lamp4Arr[i];
+        newRecord.lamp5Score = lamp5Arr[i];
+        newRecord.bestLampScore = bestLampArr[i];
+        newRecord.rank       = rankArr[i];
+        // console.log(newRecord);
+        records2.push(newRecord);           // global variable
+    }
+};
+
+
+let readRacersArr;
+// Button to read data in current directory. Remember to clear the previous records!!
 btnReadXML.addEventListener("change", function(e){
     e.preventDefault();
-    console.log("hi");
 
     let fr = new FileReader();
     fr.onload=function(){
-        document.querySelector(".read-data-from-xml").textContent = fr.result;
-        console.log(fr.result);
+        // console.log(records2);
+        // records2 = [];
+        readXMLData = fr.result;
+        records2 = [];
+        // console.log(readXMLData);
+
+        // To get each racer's unique information, we should splite the string by <row> 
+        readRacersArr = readXMLData.replaceAll(`\t`, ``).replace(`<csv_data>`,``).replace(`</csv_data>`, ``).replaceAll(`</row>`,``)
+                            .replace(`<?xml version="1.0"?>`,``).split(`<row>`);
+                        
+        readRacersArr.shift();
+
+        parseStringArrToRecords(readRacersArr);
+        displayReadRecords();
     }
-      
     fr.readAsText(this.files[0]);
 });
 
+document.querySelector(".refresh-page").addEventListener("click", function(e){
+    e.preventDefault();
+    location.reload();
+});
 
 const displayTimer = function(){
 
@@ -416,12 +560,10 @@ const displayTimer = function(){
         const sec = String(Math.trunc(time % 60)).padStart(2,0); 
         document.querySelector(".current-timer").textContent = `顯示當前計時器 ${min}:${sec}`;
 
-
         // Stop the timer!
         if(time === 0){
             time = 21;
         }
-
         // Decrement time by one 
         time--; 
     }; 
