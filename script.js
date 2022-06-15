@@ -9,8 +9,8 @@ let locale = "zh-TW";
 const deleteSet = new Set();
 
 const options = {
-    hour: "numeric",
-    minute: "numeric", 
+    // hour: "numeric",
+    // minute: "numeric", 
     day: "numeric", 
     month: "long", 
     year: "numeric", 
@@ -102,7 +102,7 @@ const displayRecords = function(){
                 </span>
             </td>
             <td class="write-xml" id="姓名">${record.name}</td>
-            <td class="write-xml" id="卡號">${record.id}</td>
+            <td class="write-xml" id="車號">${record.id}</td>
             <td class="write-xml" id="rfid">${record.rfid}</td>
             <td class="write-xml" id="車隊">${record.team}</td>
             <td class="write-xml" id="車型">${record.carModel}</td>
@@ -401,8 +401,8 @@ const displayReadRecords = function(){
                     </span>
                 </td>
                 <td class="read-xml" id="姓名">${record.name}</td>
-                <td class="read-xml" id="卡號">${record.id}</td>
-                <td class="read-xml" id="rfid">N/A</td>
+                <td class="read-xml" id="車號">${record.id}</td>
+                <td class="read-xml" id="rfid">${record.rfid}</td>
                 <td class="read-xml" id="車隊">${record.team}</td>
                 <td class="read-xml" id="車型">${record.carModel}</td>
                 <td class="read-xml" id="日期">${record.date}</td>
@@ -411,6 +411,11 @@ const displayReadRecords = function(){
                 <td class="read-xml" id="第三圈秒數">${record.lamp3Score}</td>
                 <td class="read-xml" id="第四圈秒數">${record.lamp4Score}</td>
                 <td class="read-xml" id="第五圈秒數">${record.lamp5Score}</td>
+                <td class="read-xml" id="第六圈秒數">${record.lamp6Score}</td>
+                <td class="read-xml" id="第七圈秒數">${record.lamp7Score}</td>
+                <td class="read-xml" id="第八圈秒數">${record.lamp8Score}</td>
+                <td class="read-xml" id="第九圈秒數">${record.lamp9Score}</td>
+                <td class="read-xml" id="第十圈秒數">${record.lamp10Score}</td>
                 <td class="read-xml" id="最佳圈秒數">${record.bestLampScore}</td>
                 <td class="read-xml" id="排名">${record.rank}</td>
             </tr>`;
@@ -422,7 +427,7 @@ let readXMLData;
 let temp; 
 let nameArr = [];
 let idArr = [];
-// let rfidArr = [];
+let rfidArr = [];
 let teamArr = [];
 let carModelArr = [];
 let dateArr = [];
@@ -431,6 +436,12 @@ let lamp2Arr = [];
 let lamp3Arr = [];
 let lamp4Arr = [];
 let lamp5Arr = [];
+let lamp6Arr = [];
+let lamp7Arr = [];
+let lamp8Arr = [];
+let lamp9Arr = [];
+let lamp10Arr = [];
+
 let bestLampArr = [];
 let rankArr = [];
 let records2 = [];
@@ -445,6 +456,11 @@ const populateLampArrs = function(strArr){
         lamp3Arr.push('');
         lamp4Arr.push('');
         lamp5Arr.push('');
+        lamp6Arr.push('');
+        lamp7Arr.push('');
+        lamp8Arr.push('');
+        lamp9Arr.push('');
+        lamp10Arr.push('');
         bestLampArr.push('');
     }
 };
@@ -462,8 +478,10 @@ const parseStringArrToRecords = function(strArr){
         strArrForOneRacer.forEach(function(val,j){
             if(val.includes(`<姓名>`))
                 nameArr.push(val.trim().replace(`<姓名>`, "").replace(`</姓名>`, ""));
-            else if(val.includes(`<卡號>`))
-                idArr.push(val.trim().replace(`<卡號>`, "").replace(`</卡號>`, ""));
+            else if(val.includes(`<車號>`))
+                idArr.push(val.trim().replace(`<車號>`, "").replace(`</車號>`, ""));
+            else if(val.includes(`<rfid>`))
+                rfidArr.push(val.trim().replace(`<rfid>`, "").replace(`</rfid>`, ""));
             else if(val.includes(`<車隊>`))
                 teamArr.push(val.trim().replace(`<車隊>`, "").replace(`</車隊>`, ""));
             else if(val.includes(`<車型>`))
@@ -480,6 +498,16 @@ const parseStringArrToRecords = function(strArr){
                 lamp4Arr[i] = (val.trim().replace(`<第四圈秒數>`, "").replace(`</第四圈秒數>`, ""));
             else if(val.includes(`<第五圈秒數>`))
                 lamp5Arr[i] = (val.trim().replace(`<第五圈秒數>`, "").replace(`</第五圈秒數>`, ""));
+            else if(val.includes(`<第六圈秒數>`))
+                lamp6Arr[i] = (val.trim().replace(`<第六圈秒數>`, "").replace(`</第六圈秒數>`, ""));
+            else if(val.includes(`<第七圈秒數>`))
+                lamp7Arr[i] = (val.trim().replace(`<第七圈秒數>`, "").replace(`</第七圈秒數>`, ""));
+            else if(val.includes(`<第八圈秒數>`))
+                lamp8Arr[i] = (val.trim().replace(`<第八圈秒數>`, "").replace(`</第八圈秒數>`, ""));
+            else if(val.includes(`<第九圈秒數>`))
+                lamp9Arr[i] = (val.trim().replace(`<第九圈秒數>`, "").replace(`</第九圈秒數>`, ""));
+            else if(val.includes(`<第十圈秒數>`))
+                lamp10Arr[i] = (val.trim().replace(`<第十圈秒數>`, "").replace(`</第十圈秒數>`, ""));
             else if(val.includes(`<最佳圈秒數>`))
                 bestLampArr[i] = (val.trim().replace(`<最佳圈秒數>`, "").replace(`</最佳圈秒數>`, ""));
             else if(val.includes(`<排名>`))
@@ -507,6 +535,7 @@ const parseStringArrToRecords = function(strArr){
         let newRecord = new Object();
         newRecord.name = nameArr[i];
         newRecord.id =  idArr[i];
+        newRecord.rfid = rfidArr[i];
         newRecord.team = teamArr[i];
         newRecord.carModel = carModelArr[i];
         newRecord.date = dateArr[i];
@@ -515,6 +544,11 @@ const parseStringArrToRecords = function(strArr){
         newRecord.lamp3Score = lamp3Arr[i];
         newRecord.lamp4Score = lamp4Arr[i];
         newRecord.lamp5Score = lamp5Arr[i];
+        newRecord.lamp6Score = lamp6Arr[i];
+        newRecord.lamp7Score = lamp7Arr[i];
+        newRecord.lamp8Score = lamp8Arr[i];
+        newRecord.lamp9Score = lamp9Arr[i];
+        newRecord.lamp10Score = lamp10Arr[i];
         newRecord.bestLampScore = bestLampArr[i];
         newRecord.rank       = rankArr[i];
         // console.log(newRecord);
