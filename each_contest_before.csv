@@ -1,3 +1,6 @@
-車號,姓名,rfid,車隊,車型,日期
-1,Steven,1014E9,team 1,BMW M4,2022年6月15日
-2,Michael,10155D,team 2,McLaren 720S,2022年6月15日
+姓名,車號,rfid,車隊,車型,組別,日期
+Steven,1,1014E9,team1,BMW M4,超a,2022年6月15日
+Alex,2,10154D,team1,BMW M4,超,2022年6月15日
+QQ,3,10155D,teamS,McLaren,超a,2022年6月15日
+CC,4,1014E3,teamK,McLaren,GT,2022年6月15日
+JJ,5,1014KK,teamM,McLaren,超,2022年6月15日

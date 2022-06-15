@@ -19,9 +19,10 @@ const options = {
 const record1 = {
     name: "Steven", 
     id: 1,
-    rfid: "10135D", 
+    rfid: "1014E9", 
     team: "team1",
     carModel: "BMW M4",
+    carClass: "超a",
     time: new Intl.DateTimeFormat(locale, options).format(new Date()),
     timestamp: Number(new Date())
 };
@@ -30,8 +31,9 @@ const record2 = {
     name: "Alex", 
     id: 2,
     team: "team1",
-    rfid: "10134E", 
+    rfid: "10154D", 
     carModel: "BMW M4",
+    carClass: "超",
     time: new Intl.DateTimeFormat(locale, options).format(new Date()),
     timestamp: Number(new Date())
 };
@@ -41,17 +43,42 @@ const record3 = {
     name: "QQ", 
     id: 3,
     team: "teamS",
-    rfid: "10134R", 
+    rfid: "10155D", 
     carModel: "McLaren",
+    carClass: "超a",
+    time: new Intl.DateTimeFormat(locale, options).format(new Date()),
+    timestamp: Number(new Date())
+};
+
+const record4 = {
+    name: "CC", 
+    id: 4,
+    team: "teamK",
+    rfid: "1014E3", 
+    carModel: "McLaren",
+    carClass: "GT",
     time: new Intl.DateTimeFormat(locale, options).format(new Date()),
     timestamp: Number(new Date())
 };
 
 
+const record5 = {
+    name: "JJ", 
+    id: 5,
+    team: "teamM",
+    rfid: "1014KK", 
+    carModel: "McLaren",
+    carClass: "超",
+    time: new Intl.DateTimeFormat(locale, options).format(new Date()),
+    timestamp: Number(new Date())
+};
 
-// records.push(record1);
-// records.push(record2);
-// records.push(record3);
+
+records.push(record1);
+records.push(record2);
+records.push(record3);
+records.push(record4);
+records.push(record5);
 
 const btnCreate = document.querySelector(".show-create-modal");
 // let btnsEditModal = document.querySelectorAll(".show-edit-modal");                  // dynamic element
@@ -67,6 +94,8 @@ const btnReadXML = document.querySelector(".read-xml-file");
 
 const btnSortId = document.querySelector(".sort-id");
 const btnSortTime = document.querySelector(".sort-time");
+const btnSortCarClasses = document.querySelector(".sort-car-classes");
+const btnSortCarRanks = document.querySelector(".sort-car-rankes");
 const btnConvertXML = document.querySelector(".convert-xml");
 
 let isModified = false; 
@@ -106,6 +135,7 @@ const displayRecords = function(){
             <td class="write-xml" id="rfid">${record.rfid}</td>
             <td class="write-xml" id="車隊">${record.team}</td>
             <td class="write-xml" id="車型">${record.carModel}</td>
+            <td class="write-xml" id="組別">${record.carClass}</td>
             <td class="write-xml" id="日期">${record.time}</td>
             <td>
             <button class="show-edit-modal" value="${i}"> 修改</button>
@@ -149,6 +179,7 @@ const clearEditMenu = function(){
     document.querySelector(".edit-modal-rfid").value = "";
     document.querySelector(".edit-modal-team").value = "";
     document.querySelector(".edit-modal-carModel").value = "";
+    document.querySelector(".edit-modal-carClass").value = "";
 };
 
 function createAnRecord(){
@@ -158,6 +189,7 @@ function createAnRecord(){
     newRecord.rfid = document.querySelector(".edit-modal-rfid").value;
     newRecord.team = document.querySelector(".edit-modal-team").value;
     newRecord.carModel = document.querySelector(".edit-modal-carModel").value; 
+    newRecord.carClass = document.querySelector(".edit-modal-carClass").value; 
     newRecord.time = new Intl.DateTimeFormat(locale, options).format(new Date());
     newRecord.timestamp = Number(new Date());
     return newRecord; 
@@ -184,6 +216,7 @@ const updateMenu = function(record){
     document.querySelector(".edit-modal-rfid").value = record.rfid;
     document.querySelector(".edit-modal-team").value = record.team;
     document.querySelector(".edit-modal-carModel").value = record.carModel;
+    document.querySelector(".edit-modal-carClass").value = record.carClass;
 }; 
 
 // button modify a record
@@ -307,7 +340,6 @@ btnSortId.addEventListener("click", function(e){
     displayRecords();
 });
 
-
 // Button to sort the time
 btnSortTime.addEventListener("click", function(e){
     e.preventDefault();
@@ -319,6 +351,31 @@ btnSortTime.addEventListener("click", function(e){
     
     isRecent = !isRecent;
     displayRecords();
+});
+
+
+// Button to sort car classes
+btnSortCarClasses.addEventListener("click", function(e){
+    e.preventDefault();
+    // console.log(records2);
+    records2.sort((a,b) => {
+        if(a.carClass < b.carClass)
+            return -1;
+        else if(a.carClass > b.carClass) 
+            return 1;
+        
+        return 0;
+    });
+    displayReadRecords();
+});
+
+
+// Button to sort car ranks
+btnSortCarRanks.addEventListener("click", function(e){
+    e.preventDefault();
+    // console.log(records2);
+    records2.sort((a,b) => a.rank - b.rank);
+    displayReadRecords();
 });
 
 
@@ -335,10 +392,10 @@ btnConvertXML.addEventListener("click", function(e){
     for(let i = 0, k=0; i < records.length && k < allEntries.length; i++){
         if(i < records.length)  writeData += `\t\t`;
         writeData += `<card> \n`;
-        let numOfFields = 6;
+        let numOfFields = 7;
         let oneRecord = ``;
         for(let j = 0; j < numOfFields; j++,k++){
-            if(j < 6) oneRecord += `\t\t\t`;
+            if(j < 7) oneRecord += `\t\t\t`;
             // if(allEntries[k].id == "rfid") continue;
             oneRecord += `<${allEntries[k].id}>${allEntries[k].textContent}</${allEntries[k].id}> \n`;
         }
@@ -390,7 +447,7 @@ const containerReadTable = document.querySelector(".table-body-2");             
 const displayReadRecords = function(){
 
     containerReadTable.innerHTML = "";
-    console.log(records2);
+    // console.log(records2);
     records2.forEach(function(record, i){
         const html = `
             <tr class="tr">
@@ -405,6 +462,7 @@ const displayReadRecords = function(){
                 <td class="read-xml" id="rfid">${record.rfid}</td>
                 <td class="read-xml" id="車隊">${record.team}</td>
                 <td class="read-xml" id="車型">${record.carModel}</td>
+                <td class="read-xml" id="組別">${record.carClass}</td>
                 <td class="read-xml" id="日期">${record.date}</td>
                 <td class="read-xml" id="第一圈秒數">${record.lamp1Score}</td>
                 <td class="read-xml" id="第二圈秒數">${record.lamp2Score}</td>
@@ -430,6 +488,7 @@ let idArr = [];
 let rfidArr = [];
 let teamArr = [];
 let carModelArr = [];
+let carClassArr = [];
 let dateArr = [];
 let lamp1Arr = [];
 let lamp2Arr = [];
@@ -486,6 +545,8 @@ const parseStringArrToRecords = function(strArr){
                 teamArr.push(val.trim().replace(`<車隊>`, "").replace(`</車隊>`, ""));
             else if(val.includes(`<車型>`))
                 carModelArr.push(val.trim().replace(`<車型>`, "").replace(`</車型>`, ""));
+            else if(val.includes(`<組別>`))
+                carClassArr.push(val.trim().replace(`<組別>`, "").replace(`</組別>`, ""));
             else if(val.includes(`<日期>`))
                 dateArr.push(val.trim().replace(`<日期>`, "").replace(`</日期>`, ""));
             else if(val.includes(`<第一圈秒數>`))
@@ -517,18 +578,6 @@ const parseStringArrToRecords = function(strArr){
 
     });
 
-    // console.log(nameArr);
-    // console.log(idArr);
-    // console.log(teamArr);
-    // console.log(carModelArr);
-    // console.log(dateArr);
-    // console.log(lamp1Arr);
-    // console.log(lamp2Arr);
-    // console.log(lamp3Arr);
-    // console.log(lamp4Arr);
-    // console.log(lamp5Arr);
-    // console.log(bestLampArr);
-
 
     for(let i = 0; i < nameArr.length; i++){
         // let newRecord = new Object();
@@ -538,6 +587,7 @@ const parseStringArrToRecords = function(strArr){
         newRecord.rfid = rfidArr[i];
         newRecord.team = teamArr[i];
         newRecord.carModel = carModelArr[i];
+        newRecord.carClass = carClassArr[i];
         newRecord.date = dateArr[i];
         newRecord.lamp1Score = lamp1Arr[i];
         newRecord.lamp2Score = lamp2Arr[i];
